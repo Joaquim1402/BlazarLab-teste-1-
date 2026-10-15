@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlazarLab | Análise de Variabilidade</title>
+
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+<style>
+:root {
+  --ink: #172b4d;
+  --muted: #63748b;
+  --line: #e4eaf1;
+  --bg: #f5f8fc;
+  --blue: #2459a9;
+  --navy: #142c4d;
+  --green: #27766e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.6 Arial, sans-serif;
+}
+
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: auto;
+  padding: 0 22px;
+}
+
+header {
+  background: linear-gradient(120deg, #142c4d, #2459a9);
+  color: white;
+  padding: 26px 0 54px;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 1.3rem;
+}
+
+.brand span {
+  color: #8ce0df;
+}
+
+nav {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: #e8f2ff;
+}
+
+.hero {
+  padding-top: 52px;
+  max-width: 780px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  font-size: .76rem;
+  font-weight: 800;
+  color: #9fe4e1;
+}
+
+.hero h1 {
+  font-size: clamp(2.1rem, 5vw, 3.6rem);
+  line-height: 1.08;
+  margin: 14px 0;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: #e2ebf8;
+}
+
+.hero-actions,
+.button-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary {
+  background: white;
+  color: var(--navy);
+}
+
+.secondary {
+  background: #dff3f5;
+  color: #174d5a;
+}
+
+.dark {
+  background: var(--blue);
+  color: white;
+}
+
+.outline {
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--ink);
+}
+
+main {
+  padding: 34px 0 70px;
+}
+
+.section {
+  margin-bottom: 44px;
+  scroll-margin-top: 20px;
+}
+
+.section-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.kicker {
+  color: var(--green);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: .74rem;
+}
+
+.section h2 {
+  font-size: clamp(1.55rem, 3vw, 2.2rem);
+  line-height: 1.2;
+  margin: 6px 0;
+}
+
+.section-intro {
+  color: var(--muted);
+  max-width: 740px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 5px 20px rgba(25, 50, 85, .035);
+}
+
+.method-number {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #e9f1ff;
+  color: var(--blue);
+  font-weight: 850;
+}
+
+.card h3 {
+  margin: 12px 0 8px;
+}
+
+.card p {
+  color: var(--muted);
+}
+
+.tag {
+  display: inline-block;
+  border-radius: 999px;
+  background: #eef6f6;
+  color: #27645f;
+  font-size: .76rem;
+  font-weight: 750;
+  padding: 4px 9px;
+  margin: 3px 4px 0 0;
+}
+
+.note {
+  border-left: 4px solid #d69a35;
+  background: #fff9ed;
+  padding: 14px 17px;
+  border-radius: 0 10px 10px 0;
+  color: #6c542b;
+  margin-top: 18px;
+  font-size: .92rem;
+}
+
+.formula {
+  background: #f1f5fa;
+  border-radius: 10px;
+  padding: 12px 14px;
+  overflow-wrap: anywhere;
+  font-family: monospace;
+  font-size: .9rem;
+  color: #243f64;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.chart-card {
+  min-width: 0;
+}
+
+.chart-card h3 {
+  margin: 0 0 4px;
+}
+
+.chart-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+.plot {
+  width: 100%;
+  height: 330px;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.data-layout {
+  display: grid;
+  grid-template-columns: .9fr 1.1fr;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.field label {
+  font-size: .9rem;
+  font-weight: 750;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  border: 1px solid #cfd9e5;
+  border-radius: 9px;
+  padding: 10px 11px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+}
+
+.small {
+  font-size: .85rem;
+  color: var(--muted);
+}
+
+.status {
+  font-size: .9rem;
+  margin-top: 12px;
+  color: var(--green);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.status.error {
+  color: #a13737;
+}
+
+.table-wrap {
+  overflow: auto;
+  max-height: 260px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.table-wrap table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: .84rem;
+  background: white;
+}
+
+.table-wrap th,
+.table-wrap td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.table-wrap th {
+  background: #f1f5fa;
+  position: sticky;
+  top: 0;
+}
+
+.compare {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.compare th,
+.compare td {
+  padding: 13px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.compare th {
+  background: #eef3f9;
+}
+
+.compare td {
+  color: #4f6179;
+}
+
+footer {
+  background: #142c4d;
+  color: #dbe6f5;
+  padding: 25px 0;
+  font-size: .87rem;
+}
+
+@media (max-width: 850px) {
+  .grid,
+  .data-layout,
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wide {
+    grid-column: auto;
+  }
+
+  .plot {
+    height: 300px;
+  }
+}
+
+@media (max-width: 500px) {
+  .wrap {
+    padding: 0 14px;
+  }
+
+  .card {
+    padding: 17px;
+  }
+
+  .plot {
+    height: 270px;
+  }
+
+  nav {
+    gap: 10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+
+    <div class="top">
+      <div class="brand">
+        BLazar<span>Lab</span>
+      </div>
+
+      <nav aria-label="Navegação principal">
+        <a href="#metodos">Métodos</a>
+        <a href="#graficos">Gráficos</a>
+        <a href="#dados">Seus dados</a>
+        <a href="#comparacao">Comparação</a>
+      </nav>
+    </div>
+
+    <div class="hero">
+      <div class="eyebrow">Laboratório interativo</div>
+
+      <h1>
+        Explore a complexidade das curvas de luz de blazares.
+      </h1>
+
+      <p>
+        Uma introdução visual a três abordagens de análise de
+        variabilidade: plano Fisher–Shannon, entropia amostral e
+        entropia de permutação multiescala.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn primary" href="#metodos">Conhecer os métodos ↓</a>
+        <a class="btn secondary" href="#dados">Carregar meus dados ↗</a>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="metodos" class="section">
+
+    <div class="section-head">
+      <div>
+        <div class="kicker">01 / Fundamentos</div>
+        <h2>Três métodos, três perspectivas</h2>
+        <p class="section-intro">
+          As técnicas descrevem aspectos diferentes da variabilidade.
+          Nenhuma medida, isoladamente, explica toda a física da fonte.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid">
+
+      <article class="card">
+        <span class="method-number">01</span>
+        <h3>Plano Fisher–Shannon</h3>
+
+        <span class="tag">Distribuição de fluxo</span>
+        <span class="tag">Informação</span>
+
+        <p>
+          Combina a entropia de Shannon, associada à dispersão global
+          da distribuição, com a informação de Fisher, mais sensível
+          a mudanças locais na densidade de probabilidade.
+        </p>
+
+        <div class="formula">
+          H = −∫ f(x) ln f(x) dx<br>
+          I = ∫ [f′(x)]² / f(x) dx
+        </div>
+
+        <p>
+          <b>Como ler:</b> a posição no plano conjunto oferece uma
+          descrição complementar da distribuição dos fluxos.
+          A estimativa depende da forma como a densidade é construída.
+        </p>
+      </article>
+
+      <article class="card">
+        <span class="method-number">02</span>
+        <h3>Entropia amostral (SampEn)</h3>
+
+        <span class="tag">Padrões temporais</span>
+        <span class="tag">Regularidade</span>
+
+        <p>
+          Estima a probabilidade de padrões semelhantes de comprimento
+          <i>m</i> continuarem semelhantes quando se acrescenta um ponto.
+          Ao contrário da ApEn, a SampEn não conta auto-correspondências.
+        </p>
+
+        <div class="formula">
+          SampEn(m,r,N) = −ln(A/B)
+        </div>
+
+        <p>
+          <b>Como ler:</b> valores menores indicam padrões mais
+          repetitivos; valores maiores, menor previsibilidade local.
+          Depende de <i>m</i>, da tolerância <i>r</i> e do tamanho da série.
+        </p>
+
+        <p class="small">
+          Nos estudos fornecidos, foi usado m = 2 e r = 0,2σ.
+        </p>
+      </article>
+
+      <article class="card">
+        <span class="method-number">03</span>
+        <h3>Entropia de permutação multiescala</h3>
+
+        <span class="tag">Ordem temporal</span>
+        <span class="tag">Várias escalas</span>
+
+        <p>
+          A entropia de permutação ponderada (WPE) mede a diversidade
+          de padrões de ordenação. A análise multiescala repete a medida
+          em séries coarse-grained, com diferentes escalas temporais.
+        </p>
+
+        <div class="formula">
+          CI = Σ WPE(τ), para τ = 1,…,8
+        </div>
+
+        <p>
+          <b>Como ler:</b> a curva WPE(τ) mostra como a diversidade muda
+          com a escala; o índice de complexidade (CI) resume as oito escalas.
+        </p>
+
+        <p class="small">
+          O artigo de referência usa dimensão de embedding m = 4,
+          atraso τ = 1 na ordenação e oito escalas.
+        </p>
+      </article>
+
+    </div>
+
+    <div class="note">
+      <b>Importante:</b> os gráficos iniciais desta página são
+      demonstrações sintéticas para explicar a leitura visual,
+      não resultados observacionais de uma fonte específica.
+      Ao carregar um arquivo, as estimativas são calculadas
+      localmente no navegador e dependem dos parâmetros selecionados.
+    </div>
+
+  </section>
+
+  <section id="graficos" class="section">
+
+    <div class="section-head">
+      <div>
+        <div class="kicker">02 / Visualização</div>
+        <h2>Gráficos das técnicas</h2>
+        <p class="section-intro">
+          Veja a série temporal, a distribuição dos fluxos, o plano
+          Fisher–Shannon estimado e as medidas de entropia.
+          Use a área de dados abaixo para substituir o exemplo.
+        </p>
+      </div>
+
+      <span class="tag">Gráficos interativos</span>
+    </div>
+
+    <div class="chart-grid">
+
+      <article class="card chart-card wide">
+        <h3>Curva de luz</h3>
+        <p>Fluxo em função do tempo ou da ordem das observações.</p>
+        <div id="lightcurve" class="plot"></div>
+      </article>
+
+      <article class="card chart-card">
+        <h3>Distribuição dos fluxos</h3>
+        <p>Histograma normalizado dos valores de fluxo.</p>
+        <div id="histogram" class="plot"></div>
+      </article>
+
+      <article class="card chart-card">
+        <h3>Plano Fisher–Shannon</h3>
+        <p>
+          Estimativa didática por histograma; compare apenas sob
+          a mesma configuração.
+        </p>
+        <div id="fsplane" class="plot"></div>
+      </article>
+
+      <article class="card chart-card">
+        <h3>Entropia amostral</h3>
+        <p>SampEn calculada com m = 2 e r = 0,2σ por padrão.</p>
+        <div id="sampen" class="plot"></div>
+      </article>
+
+      <article class="card chart-card">
+        <h3>WPE multiescala</h3>
+        <p>
+          Entropia de permutação ponderada estimada para escalas 1 a 8.
+        </p>
+        <div id="mse" class="plot"></div>
+      </article>
+
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="section-head">
+        <div>
+          <h3 style="margin:0">Resumo calculado</h3>
+          <p class="small">
+            Atualizado quando uma série válida é carregada ou gerada.
+          </p>
+        </div>
+        <span id="dataBadge" class="tag">Exemplo sintético</span>
+      </div>
+
+      <div id="metrics" class="small">Preparando as medidas…</div>
+    </div>
+
+  </section>
+
+  <section id="dados" class="section">
+
+    <div class="section-head">
+      <div>
+        <div class="kicker">03 / Dados</div>
+        <h2>Carregue, gere e baixe</h2>
+        <p class="section-intro">
+          Importe um CSV com a série temporal ou use os dados de
+          demonstração. O processamento acontece no seu navegador;
+          o arquivo enviado não é transmitido a um servidor.
+        </p>
+      </div>
+    </div>
+
+    <div class="data-layout">
+
+      <article class="card">
+        <h3 style="margin-top:0">Importar um arquivo CSV</h3>
+
+        <p class="small">
+          Formato recomendado: uma linha por observação, com colunas
+          numéricas para tempo e fluxo. Também é possível usar apenas
+          uma coluna de fluxo.
+        </p>
+
+        <div class="field">
+          <label for="fileInput">Arquivo .csv</label>
+          <input type="file" id="fileInput" accept=".csv,text/csv">
+        </div>
+
+        <div class="field">
+          <label for="delimiter">Separador</label>
+          <select id="delimiter">
+            <option value="auto">Detectar automaticamente</option>
+            <option value=",">Vírgula (,)</option>
+            <option value=";">Ponto e vírgula (;)</option>
+            <option value="&#9;">Tabulação</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="timeCol">Coluna de tempo (opcional)</label>
+          <select id="timeCol" disabled>
+            <option value="">Índice da observação</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="fluxCol">Coluna de fluxo</label>
+          <select id="fluxCol" disabled>
+            <option value="">Selecione um arquivo</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="rFactor">
+            Tolerância r para SampEn (múltiplo do desvio-padrão)
+          </label>
+          <input
+            type="number"
+            id="rFactor"
+            min="0.01"
+            max="1"
+            step="0.01"
+            value="0.20"
+          >
+        </div>
+
+        <div class="field">
+          <label for="maxPoints">
+            Máximo de pontos para cálculo das entropias
+          </label>
+          <select id="maxPoints">
+            <option value="300">300 (mais rápido)</option>
+            <option value="600" selected>600 (recomendado)</option>
+            <option value="1200">1200 (mais lento)</option>
+          </select>
+        </div>
+
+        <div class="button-row">
+          <button class="btn dark" id="analyzeBtn" disabled>
+            Gerar gráficos
+          </button>
+
+          <button class="btn outline" id="downloadDataBtn">
+            Baixar exemplo CSV
+          </button>
+
+          <button class="btn outline" id="downloadResultsBtn">
+            Baixar resultados CSV
+          </button>
+        </div>
+
+        <div id="uploadStatus" class="status" aria-live="polite">
+          Carregue um CSV para começar ou baixe o exemplo.
+        </div>
+      </article>
+
+      <article class="card">
+        <h3 style="margin-top:0">Prévia dos dados</h3>
+
+        <p class="small">
+          A prévia mostra as primeiras linhas reconhecidas.
+          Linhas sem valor numérico de fluxo são ignoradas nos cálculos.
+        </p>
+
+        <div id="preview" class="table-wrap">
+          <div style="padding:14px" class="small">
+            Nenhum arquivo carregado. Você pode baixar o exemplo CSV
+            e usá-lo como modelo.
+          </div>
+        </div>
+
+        <div class="note">
+          <b>Formato esperado:</b> cabeçalho como
+          <code>time,flux</code>, seguido de valores numéricos.
+          Para datas, o gráfico usa os rótulos originais; os cálculos
+          usam a ordem dos registros válidos. Não misture unidades
+          ou séries diferentes no mesmo campo de fluxo.
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="comparacao" class="section">
+
+    <div class="section-head">
+      <div>
+        <div class="kicker">04 / Interpretação</div>
+        <h2>Quando usar cada método?</h2>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0; overflow:auto">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>Método</th>
+            <th>Foco principal</th>
+            <th>O que entrega</th>
+            <th>Cuidados</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td><b>Fisher–Shannon</b></td>
+            <td>Forma da distribuição dos fluxos</td>
+            <td>
+              Dois indicadores complementares de dispersão informacional
+              e estrutura local da densidade.
+            </td>
+            <td>
+              Resultados dependem da estimativa da densidade e do
+              tratamento do ruído. Uma distribuição sem ordem temporal
+              não descreve sozinha a dinâmica temporal.
+            </td>
+          </tr>
+
+          <tr>
+            <td><b>SampEn</b></td>
+            <td>Repetição de padrões na série ordenada</td>
+            <td>
+              Uma medida de regularidade e previsibilidade local da sequência.
+            </td>
+            <td>
+              Sensível a m, r, comprimento da série, ruído e amostragem
+              irregular. Séries curtas podem produzir valores indefinidos.
+            </td>
+          </tr>
+
+          <tr>
+            <td><b>WPE multiescala / CI</b></td>
+            <td>Ordem dos padrões em diferentes escalas</td>
+            <td>
+              Curva de entropia por escala e índice agregado.
+            </td>
+            <td>
+              Depende da dimensão de embedding, coarse-graining, pesos
+              e escalas disponíveis. O CI só é comparável quando a
+              configuração é consistente.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      Associações estatísticas observadas em amostras de blazares podem
+      ser compatíveis com cenários físicos, mas não provam isoladamente
+      um mecanismo como choques ou turbulência. Para uma análise
+      científica reproduzível, documente os dados, a cadência,
+      os filtros e todos os parâmetros.
+    </div>
+
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="kicker">05 / Referências-base</div>
+        <h2>Leituras utilizadas</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>
+        <b>Richman, J. S.; Moorman, J. R. (2000).</b>
+        Physiological time-series analysis using approximate entropy
+        and sample entropy.
+        <i>American Journal of Physiology—Heart and Circulatory Physiology</i>.
+      </p>
+
+      <p>
+        <b>Vignat, C.; Bercher, J.-F. (2003).</b>
+        Analysis of signals in the Fisher–Shannon information plane.
+      </p>
+
+      <p>
+        <b>Ramos Gonçalves, M. et al.</b>
+        Sample Entropy as a Diagnostic of Blazar Radio Jet Variability:
+        A Statistical Analysis of 721 OVRO Sources.
+      </p>
+
+      <p>
+        <b>Fragoso Pinto Neto, J. et al.</b>
+        Fisher–Shannon Information Plane Analysis of Blazar Radio Variability.
+      </p>
+
+      <p>
+        <b>Souza, R.; Stosic, T.; Hatziminaoglou, E.</b>
+        Entropy-based complexity of blazar radio variability:
+        a statistical analysis of 721 sources from the OVRO 15 GHz
+        monitoring programme.
+      </p>
+
+      <p>
+        <b>Batista, V. G. R. et al.</b>
+        Multiscale Entropy of Blazar Radio Light Curves:
+        A Complexity Index Analysis of 721 OVRO Sources.
+      </p>
+
+      <p class="small">
+        Confira os metadados bibliográficos completos nas versões
+        originais dos artigos antes de usar as referências em um
+        trabalho acadêmico.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>BlazarLab</b> — recurso didático para exploração de séries temporais.</p>
+    <p>
+      As medidas numéricas são estimativas implementadas nesta página,
+      não substituem uma validação metodológica nem reproduzem
+      automaticamente todos os detalhes dos artigos citados.
+    </p>
+  </div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let headers = [];
+let parsedRows = [];
+let currentMetrics = {};
+let currentFlux = [];
+
+function mean(a) {
+  return a.length
+    ? a.reduce((s, x) => s + x, 0) / a.length
+    : NaN;
+}
+
+function std(a) {
+  if (a.length < 2) return 0;
+
+  const m = mean(a);
+
+  return Math.sqrt(
+    a.reduce((s, x) => s + (x - m) ** 2, 0) /
+    (a.length - 1)
+  );
+}
+
+function factorial(n) {
+  let x = 1;
+
+  for (let i = 2; i <= n; i++) {
+    x *= i;
+  }
+
+  return x;
+}
+
+function fmt(v, d = 4) {
+  return Number.isFinite(v)
+    ? v.toFixed(d)
+    : "indefinido";
+}
+
+function synthetic(n = 220) {
+  const flux = [];
+  const time = [];
+
+  for (let i = 0; i < n; i++) {
+    let v =
+      1.8 +
+      0.32 * Math.sin(i / 10) +
+      0.19 * Math.sin(i / 3.6) +
+      0.13 * Math.sin(i / 17) +
+      0.15 * (Math.random() - 0.5);
+
+    if (i > 80 && i < 92) {
+      v += 0.65 * Math.sin((i - 80) / 12 * Math.PI);
+    }
+
+    flux.push(v);
+    time.push(i);
+  }
+
+  return {
+    x: time,
+    flux,
+    label: "Exemplo sintético",
+    xTitle: "Índice da observação"
+  };
+}
+
+function parseCSV(text, delimiter) {
+  const lines = text
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/)
+    .filter(line => line.trim().length);
+
+  if (!lines.length) {
+    throw new Error("O arquivo está vazio.");
+  }
+
+  if (delimiter === "auto") {
+    const first = lines[0];
+
+    delimiter = [",", ";", "\t"].sort(
+      (a, b) => first.split(b).length - first.split(a).length
+    )[0];
+  }
+
+  function splitLine(line, separator) {
+    const result = [];
+    let value = "";
+    let quoted = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+
+      if (c === '"' && line[i + 1] === '"' && quoted) {
+        value += '"';
+        i++;
+      } else if (c === '"') {
+        quoted = !quoted;
+      } else if (c === separator && !quoted) {
+        result.push(value.trim());
+        value = "";
+      } else {
+        value += c;
+      }
+    }
+
+    result.push(value.trim());
+    return result;
+  }
+
+  const data = lines.map(line => splitLine(line, delimiter));
+  const first = data[0];
+
+  const hasHeader = first.some(c => /[a-zA-ZÀ-ÿ]/.test(c));
+
+  const h = hasHeader
+    ? first
+    : first.map((_, i) => "coluna_" + (i + 1));
+
+  const rows = hasHeader ? data.slice(1) : data;
+
+  return {
+    headers: h,
+    rows: rows.filter(r => r.some(c => c !== ""))
+  };
+}
+
+function numeric(value) {
+  if (value == null || value.trim() === "") {
+    return NaN;
+  }
+
+  let x = value.trim();
+
+  if (x.includes(",") && !x.includes(".")) {
+    x = x.replace(",", ".");
+  }
+
+  return Number(x);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[c]));
+}
+
+function renderPreview() {
+  if (!parsedRows.length) {
+    $("preview").innerHTML =
+      '<div style="padding:14px" class="small">Nenhum dado disponível.</div>';
+    return;
+  }
+
+  let html = "<table><thead><tr>";
+
+  headers.forEach(h => {
+    html += "<th>" + escapeHtml(h) + "</th>";
+  });
+
+  html += "</tr></thead><tbody>";
+
+  parsedRows.slice(0, 8).forEach(row => {
+    html += "<tr>";
+
+    headers.forEach((_, i) => {
+      html += "<td>" + escapeHtml(row[i] ?? "") + "</td>";
+    });
+
+    html += "</tr>";
+  });
+
+  html += "</tbody></table>";
+
+  if (parsedRows.length > 8) {
+    html += `<div class="small" style="padding:8px 10px">
+      Mostrando 8 de ${parsedRows.length} linhas.
+    </div>`;
+  }
+
+  $("preview").innerHTML = html;
+}
+
+function fillSelects() {
+  const options = headers.map((h, i) =>
+    `<option value="${i}">${escapeHtml(h)}</option>`
+  ).join("");
+
+  $("timeCol").innerHTML =
+    '<option value="">Índice da observação</option>' + options;
+
+  $("fluxCol").innerHTML = options;
+
+  $("timeCol").disabled = false;
+  $("fluxCol").disabled = false;
+
+  let fluxIndex = headers.findIndex(h =>
+    /flux|fluxo|flux_density|brightness|intensity|value|radio/i.test(h)
+  );
+
+  if (fluxIndex < 0) {
+    fluxIndex = Math.min(1, headers.length - 1);
+  }
+
+  $("fluxCol").value = String(fluxIndex);
+
+  const timeIndex = headers.findIndex(h =>
+    /time|date|epoch|mjd|tempo|data/i.test(h)
+  );
+
+  $("timeCol").value = timeIndex >= 0
+    ? String(timeIndex)
+    : "";
+
+  $("analyzeBtn").disabled = false;
+}
+
+$("fileInput").addEventListener("change", async event => {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  try {
+    const result = parseCSV(
+      await file.text(),
+      $("delimiter").value
+    );
+
+    headers = result.headers;
+    parsedRows = result.rows;
+
+    fillSelects();
+    renderPreview();
+
+    $("uploadStatus").textContent =
+      `Arquivo lido: ${file.name} · ${parsedRows.length} linhas · ${headers.length} colunas. Escolha as colunas e gere os gráficos.`;
+
+    $("uploadStatus").className = "status";
+
+  } catch (error) {
+    $("uploadStatus").textContent = error.message;
+    $("uploadStatus").className = "status error";
+  }
+});
+
+$("delimiter").addEventListener("change", async () => {
+  const file = $("fileInput").files[0];
+
+  if (!file) return;
+
+  try {
+    const result = parseCSV(
+      await file.text(),
+      $("delimiter").value
+    );
+
+    headers = result.headers;
+    parsedRows = result.rows;
+
+    fillSelects();
+    renderPreview();
+
+  } catch (error) {
+    $("uploadStatus").textContent = error.message;
+    $("uploadStatus").className = "status error";
+  }
+});
+
+function sampen(a, m = 2, rFactor = 0.2) {
+  if (a.length < m + 2) return NaN;
+
+  const r = rFactor * std(a);
+
+  if (!(r > 0)) return NaN;
+
+  let B = 0;
+  let A = 0;
+
+  for (let i = 0; i < a.length - m; i++) {
+    for (let j = i + 1; j < a.length - m; j++) {
+      let match = true;
+
+      for (let k = 0; k < m; k++) {
+        if (Math.abs(a[i + k] - a[j + k]) > r) {
+          match = false;
+          break;
+        }
+      }
+
+      if (match) {
+        B++;
+
+        if (Math.abs(a[i + m] - a[j + m]) <= r) {
+          A++;
+        }
+      }
+    }
+  }
+
+  return A > 0 && B > 0
+    ? -Math.log(A / B)
+    : NaN;
+}
+
+function permutationEntropy(a, m = 4) {
+  const counts = {};
+
+  for (let i = 0; i <= a.length - m; i++) {
+    const segment = a.slice(i, i + m);
+
+    const order = segment
+      .map((v, j) => ({ v, j }))
+      .sort((x, y) => x.v - y.v || x.j - y.j)
+      .map(item => item.j)
+      .join("");
+
+    let weight = 0;
+
+    for (let j = 0; j < m - 1; j++) {
+      weight += (segment[j + 1] - segment[j]) ** 2;
+    }
+
+    weight = Math.sqrt(weight / m);
+
+    counts[order] = (counts[order] || 0) + weight;
+  }
+
+  const values = Object.values(counts);
+  const total = values.reduce((s, v) => s + v, 0);
+
+  if (values.length < 2 || total <= 0) {
+    return NaN;
+  }
+
+  const probabilities = values
+    .map(v => v / total)
+    .filter(p => p > 0);
+
+  return -probabilities.reduce(
+    (s, p) => s + p * Math.log(p),
+    0
+  ) / Math.log(factorial(m));
+}
+
+function coarse(a, scale) {
+  const result = [];
+
+  for (let i = 0; i + scale <= a.length; i += scale) {
+    result.push(mean(a.slice(i, i + scale)));
+  }
+
+  return result;
+}
+
+function histogramDensity(a, bins = 24) {
+  let min = Math.min(...a);
+  let max = Math.max(...a);
+
+  if (max === min) max = min + 1;
+
+  const width = (max - min) / bins;
+  const counts = Array(bins).fill(0);
+
+  a.forEach(value => {
+    const index = Math.min(
+      bins - 1,
+      Math.floor((value - min) / width)
+    );
+
+    counts[index]++;
+  });
+
+  return {
+    x: counts.map((_, i) => min + (i + 0.5) * width),
+    density: counts.map(c => c / (a.length * width)),
+    width
+  };
+}
+
+function fisherShannon(a) {
+  const hist = histogramDensity(
+    a,
+    Math.max(10, Math.min(30, Math.round(Math.sqrt(a.length))))
+  );
+
+  let p = hist.density;
+  const dx = hist.width;
+
+  const norm = p.reduce((s, v) => s + v * dx, 0);
+
+  p = p.map(v => v / (norm || 1));
+
+  const H = -p.reduce(
+    (s, v) => v > 0 ? s + v * Math.log(v) : s,
+    0
+  ) * dx;
+
+  let I = 0;
+
+  for (let i = 1; i < p.length - 1; i++) {
+    const derivative = (p[i + 1] - p[i - 1]) / (2 * dx);
+
+    if (p[i] > 1e-10) {
+      I += derivative ** 2 / p[i] * dx;
+    }
+  }
+
+  return {
+    H,
+    I,
+    entropyPower: Math.exp(2 * H) / (2 * Math.PI * Math.E),
+    hist
+  };
+}
+
+function plot(id, data, layout = {}) {
+  if (!window.Plotly) {
+    $(id).innerHTML =
+      "<p style='padding:18px'>Não foi possível carregar os gráficos. Verifique sua conexão com a internet.</p>";
+    return;
+  }
+
+  Plotly.newPlot(id, data, {
+    paper_bgcolor: "#fff",
+    plot_bgcolor: "#fff",
+    font: {
+      family: "Arial, sans-serif",
+      color: "#52647c",
+      size: 12
+    },
+    margin: { l: 52, r: 18, t: 20, b: 48 },
+    xaxis: {
+      gridcolor: "#edf1f6",
+      zerolinecolor: "#dbe3ed"
+    },
+    yaxis: {
+      gridcolor: "#edf1f6",
+      zerolinecolor: "#dbe3ed"
+    },
+    ...layout
+  }, {
+    responsive: true,
+    displaylogo: false,
+    modeBarButtonsToRemove: ["lasso2d", "select2d"]
+  });
+}
+
+function draw(data) {
+  const a = data.flux;
+  const x = data.x;
+
+  if (a.length < 12) {
+    $("uploadStatus").textContent =
+      "A série precisa ter pelo menos 12 valores numéricos.";
+    $("uploadStatus").className = "status error";
+    return;
+  }
+
+  currentFlux = a;
+  $("dataBadge").textContent = data.label;
+
+  plot("lightcurve", [{
+    x,
+    y: a,
+    type: "scatter",
+    mode: "lines+markers",
+    name: "Fluxo",
+    line: { color: "#2459a9", width: 1.8 },
+    marker: { size: 4, color: "#27766e" },
+    hovertemplate: "x=%{x}<br>fluxo=%{y:.5g}<extra></extra>"
+  }], {
+    xaxis: { title: { text: data.xTitle || "Tempo / observação" } },
+    yaxis: { title: { text: "Fluxo" } },
+    showlegend: false
+  });
+
+  const hist = histogramDensity(
+    a,
+    Math.max(10, Math.min(30, Math.round(Math.sqrt(a.length))))
+  );
+
+  plot("histogram", [{
+    x: hist.x,
+    y: hist.density,
+    type: "bar",
+    marker: { color: "#7bc8c6" },
+    name: "Densidade",
+    hovertemplate: "Fluxo ≈ %{x:.4g}<br>Densidade=%{y:.4g}<extra></extra>"
+  }], {
+    xaxis: { title: { text: "Fluxo" } },
+    yaxis: { title: { text: "Densidade" } },
+    bargap: 0.06
+  });
+
+  const fs = fisherShannon(a);
+
+  plot("fsplane", [{
+    x: [fs.entropyPower],
+    y: [fs.I],
+    type: "scatter",
+    mode: "markers+text",
+    text: [data.label],
+    textposition: "top center",
+    marker: { size: 13, color: "#2459a9" },
+    hovertemplate: "N_H=%{x:.5g}<br>I=%{y:.5g}<extra></extra>"
+  }], {
+    xaxis: { title: { text: "Potência entrópica (estimativa)" } },
+    yaxis: {
+      title: { text: "Informação de Fisher (estimativa)" },
+      type: "log"
+    }
+  });
+
+  const rFactor = Number($("rFactor").value) || 0.2;
+  const se = sampen(a, 2, rFactor);
+
+  plot("sampen", [{
+    x: ["SampEn"],
+    y: [se],
+    type: "bar",
+    marker: { color: "#2459a9" },
+    text: [fmt(se, 4)],
+    textposition: "outside",
+    hovertemplate: "SampEn=%{y:.5g}<extra></extra>"
+  }], {
+    yaxis: { title: { text: "SampEn" }, rangemode: "tozero" },
+    showlegend: false
+  });
+
+  const scales = Array.from({ length: 8 }, (_, i) => i + 1);
+
+  const wpes = scales.map(scale => {
+    const c = coarse(a, scale);
+    return c.length >= 20 ? permutationEntropy(c, 4) : NaN;
+  });
+
+  const ci = wpes.every(Number.isFinite)
+    ? wpes.reduce((s, v) => s + v, 0)
+    : NaN;
+
+  plot("mse", [{
+    x: scales,
+    y: wpes,
+    type: "scatter",
+    mode: "lines+markers",
+    line: { color: "#27766e", width: 2.5 },
+    marker: { size: 8 },
+    connectgaps: false,
+    hovertemplate: "Escala=%{x}<br>WPE normalizada=%{y:.4f}<extra></extra>"
+  }], {
+    xaxis: { title: { text: "Escala τ" } },
+    yaxis: {
+      title: { text: "WPE normalizada" },
+      range: [0, 1.05]
+    },
+    showlegend: false
+  });
+
+  const average = mean(a);
+  const deviation = std(a);
+  const modulation = average !== 0
+    ? deviation / Math.abs(average)
+    : NaN;
+
+  currentMetrics = {
+    n: a.length,
+    mean: average,
+    sd: deviation,
+    modulation,
+    sampen: se,
+    shannonEntropy: fs.H,
+    entropyPower: fs.entropyPower,
+    fisher: fs.I,
+    wpe: wpes,
+    ci,
+    rFactor
+  };
+
+  const metrics = [
+    ["Pontos válidos", a.length],
+    ["Fluxo médio", fmt(average, 5)],
+    ["Desvio-padrão", fmt(deviation, 5)],
+    ["Índice de modulação", fmt(modulation, 4)],
+    ["SampEn (m=2)", fmt(se, 4)],
+    ["Entropia de Shannon H", fmt(fs.H, 4)],
+    ["Potência entrópica", fmt(fs.entropyPower, 4)],
+    ["Fisher I", fmt(fs.I, 4)],
+    ["CI (8 escalas)", fmt(ci, 4)]
+  ];
+
+  $("metrics").innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-top:14px">
+      ${metrics.map(([key, value]) => `
+        <div style="padding:12px;border:1px solid #e4eaf1;border-radius:10px">
+          <div class="small">${key}</div>
+          <div style="font-size:1.12rem;font-weight:800;color:#172b4d">${value}</div>
+        </div>
+      `).join("")}
+    </div>
+    <p class="small" style="margin-top:12px">
+      SampEn usa m=2 e r=${rFactor}σ. WPE é normalizada por ln(4!)
+      e calculada com ponderação por diferenças locais; CI é a soma
+      quando todas as oito escalas são válidas. Fisher–Shannon usa
+      estimativa por histograma e diferença finita, apenas como
+      aproximação didática.
+    </p>
+  `;
+}
+
+$("analyzeBtn").addEventListener("click", () => {
+  try {
+    if (!parsedRows.length) {
+      throw new Error("Carregue um CSV primeiro.");
+    }
+
+    const fluxIndex = Number($("fluxCol").value);
+    const timeIndex = $("timeCol").value;
+
+    let a = [];
+    let x = [];
+
+    parsedRows.forEach((row, i) => {
+      const value = numeric(row[fluxIndex]);
+
+      if (Number.isFinite(value)) {
+        a.push(value);
+
+        x.push(
+          timeIndex !== ""
+            ? (row[Number(timeIndex)] || String(i + 1))
+            : i + 1
+        );
+      }
+    });
+
+    if (a.length < 12) {
+      throw new Error(
+        "Foram encontrados menos de 12 valores numéricos. Verifique a coluna selecionada."
+      );
+    }
+
+    const max = Number($("maxPoints").value);
+
+    if (a.length > max) {
+      const step = (a.length - 1) / (max - 1);
+      const reducedA = [];
+      const reducedX = [];
+
+      for (let j = 0; j < max; j++) {
+        const index = Math.round(j * step);
+        reducedA.push(a[index]);
+        reducedX.push(x[index]);
+      }
+
+      a = reducedA;
+      x = reducedX;
+    }
+
+    draw({
+      flux: a,
+      x,
+      label: "Arquivo carregado",
+      xTitle: timeIndex !== ""
+        ? headers[Number(timeIndex)]
+        : "Índice da observação"
+    });
+
+    $("uploadStatus").textContent =
+      `Análise concluída: ${a.length} pontos utilizados.`;
+
+    $("uploadStatus").className = "status";
+
+  } catch (error) {
+    $("uploadStatus").textContent = error.message;
+    $("uploadStatus").className = "status error";
+  }
+});
+
+$("downloadDataBtn").addEventListener("click", () => {
+  const data = synthetic(220);
+
+  const csv =
+    "time,flux\n" +
+    data.flux.map((v, i) => `${i},${v.toFixed(6)}`).join("\n");
+
+  download(
+    "exemplo_curva_de_luz.csv",
+    csv,
+    "text/csv;charset=utf-8"
+  );
+});
+
+$("downloadResultsBtn").addEventListener("click", () => {
+  if (!currentMetrics.n) {
+    $("uploadStatus").textContent =
+      "Gere os gráficos antes de baixar os resultados.";
+
+    $("uploadStatus").className = "status error";
+    return;
+  }
+
+  const m = currentMetrics;
+
+  const lines = [
+    ["medida", "valor"],
+    ["pontos_validos", m.n],
+    ["media_fluxo", m.mean],
+    ["desvio_padrao", m.sd],
+    ["indice_modulacao", m.modulation],
+    ["SampEn_m2", m.sampen],
+    ["entropia_Shannon_estimativa", m.shannonEntropy],
+    ["potencia_entropica_estimativa", m.entropyPower],
+    ["Fisher_estimativa", m.fisher],
+    ["CI_8_escalas", m.ci],
+    ...m.wpe.map((v, i) => [`WPE_escala_${i + 1}`, v])
+  ];
+
+  download(
+    "resultados_blazarlab.csv",
+    lines.map(row => row.map(v => String(v ?? "")).join(",")).join("\n"),
+    "text/csv;charset=utf-8"
+  );
+});
+
+function download(name, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = name;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+}
+
+draw(synthetic());
+</script>
+
+</body>
+</html>
